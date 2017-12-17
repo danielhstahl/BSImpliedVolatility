@@ -8,7 +8,7 @@
 namespace IV {
     template<typename S0, typename K, typename Discount, typename Guess, typename Actual>
     auto getIV(const S0& asset, const K& strike, const Discount& discount, const Actual& callPrice, const Guess& guess){
-        if(asset<0){
+        if(asset<0||callPrice<0){
             return -1.0; //something ridiculous
         }
         else if(asset-strike>callPrice){

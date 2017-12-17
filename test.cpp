@@ -15,6 +15,18 @@ TEST_CASE("Test IV Alone", "[BSIV]"){
     const double callPriceAtVol=BSCall(S0, discount, k, iv);
     REQUIRE(callPriceAtVol==Approx(callPrice));
 }
+
+TEST_CASE("Test IV edge case", "[BSIV]"){
+    const double r=.03;
+    const double S0=50;
+    const double T=.25;
+    const double k=42.7673;
+    const double discount=exp(-r*T);
+    const double callPrice=-5;
+    const double iv=IV::getIV(S0, k, discount, callPrice, .1);
+    std::cout<<"iv: "<<iv<<std::endl;
+    REQUIRE(iv==-1.0);
+}
 TEST_CASE("Test getAllIVByAsset", "[BSIV]"){
     const double r=.03;
     std::vector<double> S0;
