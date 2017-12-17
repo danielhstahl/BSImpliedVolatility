@@ -27,6 +27,18 @@ TEST_CASE("Test IV edge case", "[BSIV]"){
     std::cout<<"iv: "<<iv<<std::endl;
     REQUIRE(iv==-1.0);
 }
+//42.7175,"atPoint":8.96451
+TEST_CASE("Test IV another edge case", "[BSIV]"){
+    const double r=.03;
+    const double S0=50;
+    const double T=.25;
+    const double callPrice=42.7175;
+    const double k=8.96451;
+    const double discount=exp(-r*T);
+    const double iv=IV::getIV(S0, k, discount, callPrice, 5.0);
+    std::cout<<"iv: "<<iv<<std::endl;
+    REQUIRE(iv==-1.0);
+}
 TEST_CASE("Test getAllIVByAsset", "[BSIV]"){
     const double r=.03;
     std::vector<double> S0;

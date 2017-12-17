@@ -8,13 +8,14 @@
 namespace IV {
     template<typename S0, typename K, typename Discount, typename Guess, typename Actual>
     auto getIV(const S0& asset, const K& strike, const Discount& discount, const Actual& callPrice, const Guess& guess){
+        const Guess defaultRet=-1.0;//something ridiculous
         if(asset<0||callPrice<0){
-            return -1.0; //something ridiculous
+            return defaultRet; //something ridiculous
         }
         else if(asset-strike>callPrice){
-            return -1.0;//something ridiculous
+            return defaultRet;//something ridiculous
         }
-        return newton::zeros(
+        const auto result= newton::zeros(
             [&](const auto& sigma) {
                 return BSCall(asset, discount, strike, sigma)-callPrice;
             },
@@ -23,6 +24,12 @@ namespace IV {
             .0000001,
             20
         );
+        if(std::isnan(result)){
+            return defaultRet;
+        }
+        else{
+            return result;
+        }
     }
 
     template<typename ArrOfAsset, typename ArrOfPrice, typename K, typename Discount, typename Maturity, typename Guess>
