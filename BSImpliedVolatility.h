@@ -27,6 +27,9 @@ namespace IV {
         if(std::isnan(result)){
             return defaultRet;
         }
+        else if(std::isinf(result)){
+            return defaultRet;
+        }
         else{
             return result;
         }

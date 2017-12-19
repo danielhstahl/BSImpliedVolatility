@@ -16,7 +16,7 @@ TEST_CASE("Test IV Alone", "[BSIV]"){
     REQUIRE(callPriceAtVol==Approx(callPrice));
 }
 
-TEST_CASE("Test IV edge case", "[BSIV]"){
+TEST_CASE("Test IV edge case: negative call", "[BSIV]"){
     const double r=.03;
     const double S0=50;
     const double T=.25;
@@ -27,6 +27,18 @@ TEST_CASE("Test IV edge case", "[BSIV]"){
     std::cout<<"iv: "<<iv<<std::endl;
     REQUIRE(iv==-1.0);
 }
+TEST_CASE("Test IV edge case: negative asset", "[BSIV]"){
+    const double r=.03;
+    const double S0=-5;
+    const double T=.25;
+    const double k=42.7673;
+    const double discount=exp(-r*T);
+    const double callPrice=5;
+    const double iv=IV::getIV(S0, k, discount, callPrice, .1);
+    std::cout<<"iv: "<<iv<<std::endl;
+    REQUIRE(iv==-1.0);
+}
+
 //42.7175,"atPoint":8.96451
 TEST_CASE("Test IV another edge case", "[BSIV]"){
     const double r=.03;
