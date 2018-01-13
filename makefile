@@ -1,4 +1,4 @@
-INCLUDES=  -I ../FunctionalUtilities  -I ../HullWhite -I../GaussNewton -I../TupleUtilities -I../AutoDiff
+INCLUDES=  -I ../FunctionalUtilities  -I ../HullWhite -I../GaussNewton -I../TupleUtilities -I../AutoDiff -I../NeldorMead
 
 test:test.o
 	g++ -std=c++14 -O3 -pthread --coverage test.o $(INCLUDES) -o test -fopenmp

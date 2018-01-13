@@ -3,17 +3,29 @@
 #include "BSImpliedVolatility.h"
 #include "BlackScholes.h"
 
-TEST_CASE("Test IV Alone", "[BSIV]"){
+TEST_CASE("Test IV Alone Call", "[BSIV]"){
     const double r=.03;
     const double S0=50;
     const double T=1;
     const double k=50;
     const double discount=exp(-r*T);
     const double callPrice=3.0;
-    const double iv=IV::getIV(S0, k, discount, callPrice, .1);
+    const double iv=IV::getIVGeneric(S0, k, discount, callPrice, .1, IV::localBSCall);
     std::cout<<"iv: "<<iv<<std::endl;
     const double callPriceAtVol=BSCall(S0, discount, k, iv);
     REQUIRE(callPriceAtVol==Approx(callPrice));
+}
+TEST_CASE("Test IV Alone Put", "[BSIV]"){
+    const double r=.03;
+    const double S0=50;
+    const double T=1;
+    const double k=50;
+    const double discount=exp(-r*T);
+    const double putPrice=3.0;
+    const double iv=IV::getIVGeneric(S0, k, discount, putPrice, .1, IV::localBSPut);
+    std::cout<<"iv: "<<iv<<std::endl;
+    const double putPriceAtVol=BSPut(S0, discount, k, iv);
+    REQUIRE(putPriceAtVol==Approx(putPrice));
 }
 
 TEST_CASE("Test IV edge case: negative call", "[BSIV]"){
@@ -23,7 +35,7 @@ TEST_CASE("Test IV edge case: negative call", "[BSIV]"){
     const double k=42.7673;
     const double discount=exp(-r*T);
     const double callPrice=-5;
-    const double iv=IV::getIV(S0, k, discount, callPrice, .1);
+    const double iv=IV::getIVGeneric(S0, k, discount, callPrice, .1, IV::localBSCall);
     std::cout<<"iv: "<<iv<<std::endl;
     REQUIRE(iv==-1.0);
 }
@@ -34,10 +46,11 @@ TEST_CASE("Test IV edge case: negative asset", "[BSIV]"){
     const double k=42.7673;
     const double discount=exp(-r*T);
     const double callPrice=5;
-    const double iv=IV::getIV(S0, k, discount, callPrice, .1);
+    const double iv=IV::getIVGeneric(S0, k, discount, callPrice, .1, IV::localBSCall);
     std::cout<<"iv: "<<iv<<std::endl;
     REQUIRE(iv==-1.0);
 }
+
 
 //42.7175,"atPoint":8.96451
 TEST_CASE("Test IV another edge case", "[BSIV]"){
@@ -47,7 +60,7 @@ TEST_CASE("Test IV another edge case", "[BSIV]"){
     const double callPrice=42.7175;
     const double k=8.96451;
     const double discount=exp(-r*T);
-    const double iv=IV::getIV(S0, k, discount, callPrice, 5.0);
+    const double iv=IV::getIVGeneric(S0, k, discount, callPrice, 5.0, IV::localBSCall);
     std::cout<<"iv: "<<iv<<std::endl;
     REQUIRE(iv==-1.0);
 }
@@ -65,7 +78,7 @@ TEST_CASE("Test getAllIVByAsset", "[BSIV]"){
     const double k=50;
     const double discount=exp(-r*T);
     
-    const auto ivByAsset=IV::getAllIVByAsset(
+    const auto ivByAsset=IV::getAllIVByAssetCall(
         S0, callPrice, k, discount, T, .5
     );
 
@@ -92,7 +105,7 @@ TEST_CASE("Test getAllIVByStrike", "[BSIV]"){
     const double S0=50;
     const double discount=exp(-r*T);
     
-    const auto ivByStrike=IV::getAllIVByStrike(
+    const auto ivByStrike=IV::getAllIVByStrikeCall(
       strike, callPrice, S0, discount, T, .5
     );
     int n=ivByStrike.size();
