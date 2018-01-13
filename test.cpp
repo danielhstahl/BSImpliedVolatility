@@ -2,6 +2,7 @@
 #include "catch.hpp"
 #include "BSImpliedVolatility.h"
 #include "BlackScholes.h"
+#include "CalibrateOptions.h"
 
 TEST_CASE("Test IV Alone Call", "[BSIV]"){
     const double r=.03;
@@ -117,5 +118,23 @@ TEST_CASE("Test getAllIVByStrike", "[BSIV]"){
         const double callPriceAtVol=BSCall(S0, discount, strike[i], ivByStrike[i]*sqrt(T));
         REQUIRE(callPrice[i]==Approx(callPriceAtVol));
     }    
+}
+TEST_CASE("Test l2norm", "[calibratoptions]"){
+    const double r=.03;
+    const double T=1;
+    const double S0=50;
+    const double discount=exp(-r*T);
+    const double unknownSigma=.3;
+    std::vector<double> strikes={40, 50, 60};
+    std::vector<double> prices={
+        BSCall(S0, discount, strikes[0], unknownSigma),
+        BSCall(S0, discount, strikes[1], unknownSigma),
+        BSCall(S0, discount, strikes[2], unknownSigma)
+    };
+    auto results=calibrateoptions::l2norm(std::vector<double>({.2}), [&](const auto& strike, const auto& args){
+        return BSCall(S0, discount, strike, args[0]);
+    }, prices, strikes);
+    REQUIRE(results[0]==Approx(unknownSigma));
+    //std::cout<<"estimated sigma: "<<results[0]<<std::endl;
 }
 

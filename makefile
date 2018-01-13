@@ -1,8 +1,15 @@
-INCLUDES=  -I ../FunctionalUtilities  -I ../HullWhite -I../GaussNewton -I../TupleUtilities -I../AutoDiff -I../NeldorMead
+INCLUDES=  -I ../FunctionalUtilities  -I ../HullWhite -I../GaussNewton -I../TupleUtilities -I../AutoDiff -I../neldor_mead
+GCCVAL=g++
+
+
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	GCCVAL=g++-7
+endif
 
 test:test.o
-	g++ -std=c++14 -O3 -pthread --coverage test.o $(INCLUDES) -o test -fopenmp
+	${GCCVAL} -std=c++14 -O3 -pthread --coverage test.o $(INCLUDES) -o test -fopenmp
 test.o:test.cpp BSImpliedVolatility.h
-	g++ -std=c++14 -O3 -pthread --coverage -c test.cpp $(INCLUDES) -fopenmp
+	${GCCVAL} -std=c++14 -O3 -pthread --coverage -c test.cpp $(INCLUDES) -fopenmp
 clean:
 	-rm *.o *.out test
