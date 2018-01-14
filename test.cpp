@@ -141,48 +141,5 @@ TEST_CASE("Test l2norm", "[calibratoptions]"){
     REQUIRE(results[0]==Approx(unknownSigma));
     //std::cout<<"estimated sigma: "<<results[0]<<std::endl;
 }
-template<typename T>
-auto removeFirstAndLast(std::vector<T>&& arr){
-    //arr.pop_back();
-    //arr.pop_front();
-    std::vector<T>   sub(&arr[1],&arr[arr.size()-2]);
-    return sub;
-}
 
-TEST_CASE("Test l2normvector", "[calibratoptions]"){
-    const double r=.03;
-    const double T=1;
-    const double S0=50;
-    const double discount=exp(-r*T);
-    const double xMax=7.0;
-    const int numU=256;
-    auto cgmyCFHOC=cf(r, T, S0, 1.0);
-    std::deque<double> strikes={40, 43, 50, 54, 60};
-    std::vector<double> prices={
-        8, 5, 3, 1.5, .5
-    };
-    strikes.push_front(exp(xMax)*S0);
-    strikes.push_back(exp(-xMax)*S0);
-    auto results=calibrateoptions::l2normvector(std::vector<double>({
-        .2, 2, 2, .503, .2, .3, .2, .2
-    }), [&](const auto& strikes, const auto& args){
-
-        return removeFirstAndLast(optionprice::FangOostCallPrice(
-            S0, strikes,
-            r, T,
-            numU,  
-            cgmyCFHOC(
-                args[0], args[1], args[2], 
-                args[3], args[4], args[5], 
-                args[6], args[7]
-            )
-        ));
-    }, [](const auto& args){
-        return args[0]<0||args[7]<0;
-    }, prices, strikes);
-    for(auto& v:results){
-        std::cout<<"v: "<<v<<std::endl;
-    }
-    //REQUIRE(results[0]==Approx(unknownSigma));
-}
 
