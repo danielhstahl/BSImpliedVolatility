@@ -12,6 +12,14 @@ namespace calibrateoptions{
             });
         }, initArgs);
     }
+    template<typename OptionCal, typename ConstraintFn, typename Array, typename T, typename U>
+    auto l2normvector(const std::vector<U>& initArgs, const OptionCal& cal,const ConstraintFn& cons, const std::vector<T>& prices, const Array& strikes){
+        return neldermead::Simplex([&](const auto& args){
+            return cons(args)?5000.0:futilities::sum(cal(strikes, args), [&](const auto& val, const auto& index){
+                return futilities::const_power(prices[index]-val, 2);
+            });
+        }, initArgs);
+    }
 }
 
 

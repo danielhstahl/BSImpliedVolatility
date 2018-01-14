@@ -1,4 +1,4 @@
-INCLUDES=  -I ../FunctionalUtilities  -I ../HullWhite -I../GaussNewton -I../TupleUtilities -I../AutoDiff -I../neldor_mead
+INCLUDES=  -I ../FunctionalUtilities  -I ../HullWhite -I../GaussNewton -I../TupleUtilities -I../AutoDiff -I../neldor_mead -I ../levy-functions -I../CharacteristicFunctions -I../RungeKutta -I../FFTOptionPricing -I../FangOost
 GCCVAL=g++
 
 
@@ -9,7 +9,7 @@ endif
 
 test:test.o
 	${GCCVAL} -std=c++14 -O3 -pthread --coverage test.o $(INCLUDES) -o test -fopenmp
-test.o:test.cpp BSImpliedVolatility.h
+test.o:test.cpp BSImpliedVolatility.h CalibrateOptions.h
 	${GCCVAL} -std=c++14 -O3 -pthread --coverage -c test.cpp $(INCLUDES) -fopenmp
 clean:
 	-rm *.o *.out test
