@@ -19,9 +19,6 @@ namespace IV {
         if(asset<0||optionPrice<0){
             return defaultRet; //something ridiculous
         }
-        else if(asset-strike>optionPrice){
-            return defaultRet;//something ridiculous
-        }
         const auto result= newton::zeros(
             [&](const auto& sigma) {
                 return optionPricer(asset, discount, strike, sigma)-optionPrice;
@@ -119,7 +116,7 @@ namespace IV {
                 const auto& strike, 
                 const auto& index
             ){
-                return getIV(asset, strike, discount, callPrices[index], guess, localBSPut)/sqrtMat;
+                return getIVGeneric(asset, strike, discount, callPrices[index], guess, localBSPut)/sqrtMat;
             } 
         );
     }

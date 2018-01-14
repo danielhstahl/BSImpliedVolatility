@@ -93,7 +93,7 @@ TEST_CASE("Test getAllIVByAsset", "[BSIV]"){
         REQUIRE(callPrice[i]==Approx(callPriceAtVol));
     }    
 }
-TEST_CASE("Test getAllIVByStrike", "[BSIV]"){
+TEST_CASE("Test getAllIVByStrikeCall", "[BSIV]"){
     const double r=.03;
     std::vector<double> strike;
     strike.push_back(40);
@@ -118,6 +118,33 @@ TEST_CASE("Test getAllIVByStrike", "[BSIV]"){
     for(int i=0; i<n;++i){
         const double callPriceAtVol=BSCall(S0, discount, strike[i], ivByStrike[i]*sqrt(T));
         REQUIRE(callPrice[i]==Approx(callPriceAtVol));
+    }    
+}
+TEST_CASE("Test getAllIVByStrikePut", "[BSIV]"){
+    const double r=.03;
+    std::vector<double> strike;
+    strike.push_back(40);
+    strike.push_back(50);
+    strike.push_back(60);
+    std::vector<double> putPrice;
+    putPrice.push_back(1);
+    putPrice.push_back(6);
+    putPrice.push_back(15);
+    const double T=1;
+    const double S0=50;
+    const double discount=exp(-r*T);
+    
+    const auto ivByStrike=IV::getAllIVByStrikePut(
+      strike, putPrice, S0, discount, T, .5
+    );
+    int n=ivByStrike.size();
+    for(int i=0; i<n;++i){
+      std::cout<<ivByStrike[i]<<std::endl;
+    }
+    
+    for(int i=0; i<n;++i){
+        const double putPriceAtVol=BSPut(S0, discount, strike[i], ivByStrike[i]*sqrt(T));
+        REQUIRE(putPrice[i]==Approx(putPriceAtVol));
     }    
 }
 TEST_CASE("Test l2norm", "[calibratoptions]"){
