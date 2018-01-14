@@ -3,9 +3,6 @@
 #include "BSImpliedVolatility.h"
 #include "BlackScholes.h"
 #include "CalibrateOptions.h"
-#include <deque>
-#include "get_cf.h"
-#include "OptionPricing.h"
 
 
 TEST_CASE("Test IV Alone Call", "[BSIV]"){
