@@ -162,7 +162,7 @@ TEST_CASE("Test l2norm", "[calibratoptions]"){
     auto results=calibrateoptions::l2norm(std::vector<double>({.2}), [&](const auto& strike, const auto& args){
         return BSCall(S0, discount, strike, args[0]);
     }, prices, strikes);
-    REQUIRE(results[0]==Approx(unknownSigma));
+    REQUIRE(std::get<0>(results)[0]==Approx(unknownSigma));
     //std::cout<<"estimated sigma: "<<results[0]<<std::endl;
 }
 
