@@ -147,7 +147,7 @@ TEST_CASE("Test getAllIVByStrikePut", "[BSIV]"){
         REQUIRE(putPrice[i]==Approx(putPriceAtVol));
     }    
 }
-TEST_CASE("Test l2norm", "[calibratoptions]"){
+TEST_CASE("Test l2normneldermead", "[calibratoptions]"){
     const double r=.03;
     const double T=1;
     const double S0=50;
@@ -159,11 +159,32 @@ TEST_CASE("Test l2norm", "[calibratoptions]"){
         BSCall(S0, discount, strikes[1], unknownSigma),
         BSCall(S0, discount, strikes[2], unknownSigma)
     };
-    auto results=calibrateoptions::l2norm(std::vector<double>({.2}), [&](const auto& strike, const auto& args){
+    auto results=calibrateoptions::l2normNelderMead(std::vector<double>({.2}), [&](const auto& strike, const auto& args){
         return BSCall(S0, discount, strike, args[0]);
     }, prices, strikes);
     REQUIRE(std::get<0>(results)[0]==Approx(unknownSigma));
     //std::cout<<"estimated sigma: "<<results[0]<<std::endl;
+}
+TEST_CASE("Test l2normcuckoo", "[calibratoptions]"){
+    const double r=.03;
+    const double T=1;
+    const double S0=50;
+    const double discount=exp(-r*T);
+    const double unknownSigma=.3;
+    std::vector<double> strikes={40, 50, 60};
+    std::vector<double> prices={
+        BSCall(S0, discount, strikes[0], unknownSigma),
+        BSCall(S0, discount, strikes[1], unknownSigma),
+        BSCall(S0, discount, strikes[2], unknownSigma)
+    };
+    std::vector<cuckoo::upper_lower<double> > ul;
+    ul.push_back(cuckoo::upper_lower<double>(0.01, .8));
+    auto results=calibrateoptions::l2normCuckooVector([&](const auto& strike, const auto& args){
+        return futilities::for_each(0, (int)strike.size(), [&](const auto& index){
+            return BSCall(S0, discount, strike[index], args[0]);
+        });
+    }, ul, prices, strikes);
+    REQUIRE(std::get<0>(results)[0]==Approx(unknownSigma));
 }
 
 
