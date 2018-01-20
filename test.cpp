@@ -183,7 +183,7 @@ TEST_CASE("Test l2normcuckoo", "[calibratoptions]"){
         return futilities::for_each(0, (int)strike.size(), [&](const auto& index){
             return BSCall(S0, discount, strike[index], args[0]);
         });
-    }, ul, prices, strikes);
+    }, ul, prices, strikes, 1000, 42);
     REQUIRE(std::get<0>(results)[0]==Approx(unknownSigma));
 }
 

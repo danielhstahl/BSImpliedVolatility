@@ -51,15 +51,15 @@ namespace calibrateoptions{
     }
     
     constexpr int numNests=25;
-    constexpr int maxNumRuns=1000; 
-    constexpr int seed=42;//could make this current time but not right now
     template<typename OptionCal, typename AlterCostFn, typename Array1, typename Array2, typename Array3>
     auto l2normCuckooVector(
         const OptionCal& cal,
         const Array1& ul,
         const AlterCostFn& alterCostFn, 
         const Array2& prices, 
-        const Array3& strikes
+        const Array3& strikes,
+        int maxNumRuns,
+        int seed
     ){
         return cuckoo::optimize([&](const auto& args){
             return futilities::sum(cal(strikes, args), [&](const auto& val, const auto& index){
@@ -72,9 +72,11 @@ namespace calibrateoptions{
         const OptionCal& cal,
         const Array1& ul,
         const Array2& prices, 
-        const Array3& strikes
+        const Array3& strikes,
+        int maxNumRuns,
+        int seed
     ){
-        return l2normCuckooVector(cal, ul, [](const auto& index){return 1.0;}, prices, strikes);
+        return l2normCuckooVector(cal, ul, [](const auto& index){return 1.0;}, prices, strikes, maxNumRuns, seed);
     }
     
 }
