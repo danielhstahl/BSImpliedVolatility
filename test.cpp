@@ -162,9 +162,29 @@ TEST_CASE("Test l2normneldermead", "[calibratoptions]"){
     auto results=calibrateoptions::l2normNelderMead(std::vector<double>({.2}), [&](const auto& strike, const auto& args){
         return BSCall(S0, discount, strike, args[0]);
     }, prices, strikes);
+    std::cout<<"fnVal: "<<std::get<1>(results)<<std::endl;
     REQUIRE(std::get<0>(results)[0]==Approx(unknownSigma));
     //std::cout<<"estimated sigma: "<<results[0]<<std::endl;
 }
+/*TEST_CASE("Test l2normneldermead with varying sigma", "[calibratoptions]"){
+    const double r=.03;
+    const double T=1;
+    const double S0=50;
+    const double discount=exp(-r*T);
+    //const double unknownSigma=.3;
+    std::vector<double> strikes={40, 50, 60};
+    std::vector<double> prices={
+        BSCall(S0, discount, strikes[0], .4),
+        BSCall(S0, discount, strikes[1], .3),
+        BSCall(S0, discount, strikes[2], .2)
+    };
+    auto results=calibrateoptions::l2normNelderMead(std::vector<double>({.2}), [&](const auto& strike, const auto& args){
+        return BSCall(S0, discount, strike, args[0]);
+    }, prices, strikes);
+    std::cout<<"fnVal: "<<std::get<1>(results)<<std::endl;
+    //REQUIRE(std::get<0>(results)[0]==Approx(.3));
+    //std::cout<<"estimated sigma: "<<results[0]<<std::endl;
+}*/
 TEST_CASE("Test l2normcuckoo", "[calibratoptions]"){
     const double r=.03;
     const double T=1;
@@ -184,6 +204,7 @@ TEST_CASE("Test l2normcuckoo", "[calibratoptions]"){
             return BSCall(S0, discount, strike[index], args[0]);
         });
     }, ul, prices, strikes, 1000, 42);
+    std::cout<<"fnVal: "<<std::get<1>(results)<<std::endl;
     REQUIRE(std::get<0>(results)[0]==Approx(unknownSigma));
 }
 
