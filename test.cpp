@@ -3,6 +3,7 @@
 #include "BSImpliedVolatility.h"
 #include "BlackScholes.h"
 #include "CalibrateOptions.h"
+#include "utils.h"
 
 
 TEST_CASE("Test IV Alone Call", "[BSIV]"){
@@ -197,8 +198,8 @@ TEST_CASE("Test l2normcuckoo", "[calibratoptions]"){
         BSCall(S0, discount, strikes[1], unknownSigma),
         BSCall(S0, discount, strikes[2], unknownSigma)
     };
-    std::vector<cuckoo::upper_lower<double> > ul;
-    ul.push_back(cuckoo::upper_lower<double>(0.01, .8));
+    std::vector<swarm_utils::upper_lower<double> > ul;
+    ul.push_back(swarm_utils::upper_lower<double>(0.01, .8));
     auto results=calibrateoptions::l2normCuckooVector([&](const auto& strike, const auto& args){
         return futilities::for_each(0, (int)strike.size(), [&](const auto& index){
             return BSCall(S0, discount, strike[index], args[0]);

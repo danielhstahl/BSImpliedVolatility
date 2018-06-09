@@ -54,7 +54,7 @@ namespace calibrateoptions{
             return futilities::sum(cal(strikes, args), [&](const auto& val, const auto& index){
                 return futilities::const_power(prices[index]-val, 2);
             });
-        }, ul, numNests, maxNumRuns, seed);
+        }, ul, numNests, maxNumRuns, .00000001, seed);
     }    
 }
 
