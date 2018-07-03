@@ -2,7 +2,6 @@
 #include "catch.hpp"
 #include "BSImpliedVolatility.h"
 #include "BlackScholes.h"
-#include "CalibrateOptions.h"
 #include "utils.h"
 
 
